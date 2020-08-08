@@ -14,7 +14,7 @@ Following are required for this configuration to run successfully
 
 ## Warning on AWS cost
 You will incur some cost when running this configuration. This is due to the requirement of [Kubernetes cluster](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) which is nodes have to have:
-> 2 GB or more of RAM per machine (any less will leave little room for your apps)
+> 2 GB or more of RAM per machine (any less will leave little room for your apps)<br>
 > 2 CPUs or more
 
 Therefore, the instance type of EC2 nodes spun up by this configuration must be at at least t2.medium.
