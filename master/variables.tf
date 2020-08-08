@@ -11,7 +11,6 @@ variable "instance_type" {
   default = "t2.medium"
 }
 
-variable master_count {}
 variable aws_key_name {}
 variable aws_privatekey_path {}
 variable aws_subnet_id {}

@@ -12,7 +12,7 @@ data "template_file" "cluster-bootstrap" {
 data "template_cloudinit_config" "master-provisioner" {
   gzip = false
   base64_encode = false
-  count = var.master_count
+  count = 1
   part {
     content_type = "text/x-shellscript"
     content = <<EOF
@@ -40,7 +40,7 @@ resource "aws_instance" "master" {
 
   ami = "ami-0fc841be1f929d7d1" #RedHat8
   instance_type = var.instance_type
-  count = var.master_count
+  count = 1
   key_name = var.aws_key_name
 
   subnet_id = var.aws_subnet_id

@@ -49,7 +49,6 @@ module "worker" {
 module "master" {
   source = "./master"
   ec2user = var.ec2user
-  master_count = var.master_count
   instance_type = var.instance_type
 
 

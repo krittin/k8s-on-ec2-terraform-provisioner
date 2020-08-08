@@ -29,10 +29,6 @@ variable "ami" {
   default = "ami-0fc841be1f929d7d1" #RedHat 8
 }
 
-variable "master_count" {
-  type = number
-}
-
 variable "worker_count" {
   type = number
 }
