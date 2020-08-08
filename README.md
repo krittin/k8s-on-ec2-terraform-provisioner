@@ -17,8 +17,8 @@ You will incur some cost when running this configuration. This is due to the req
 > 2 GB or more of RAM per machine (any less will leave little room for your apps)<br>
 > 2 CPUs or more
 
-Therefore, the instance type of EC2 nodes spun up by this configuration must be at at least t2.medium.
-Please check costs associated each instance type [here](https://aws.amazon.com/ec2/instance-types/t2/)
+Therefore, the instance type of EC2 nodes spun up by this configuration must be at least t2.medium.
+Please check costs associated to each instance type [here](https://aws.amazon.com/ec2/instance-types/t2/)
 
 
 ## This configuration is opinionated
@@ -28,10 +28,16 @@ This configuration is opinionated. It
 - logs userdata of EC2 nodes to /var/log/user-data.log
 - uses Calico network add-on for Kubernetes cluster
 
+
 ## How to run
-```
+1. Clone this repository
+	```
     git clone https://github.com/krittin/k8s-on-ec2-terraform-provisioner.git
     cd k8s-on-ec2-terraform-provisioner
-    terraform init
+	```
+2. Create a .tfvars file and assign values to the requried variable declared in k8s-on-ec2-terraform-provisioner/variables.tf
+3. Run the configuration
+	```
+	terraform init
     terraform apply
-```
+	```

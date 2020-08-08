@@ -26,7 +26,6 @@ module "network" {
 
 module "package" {
   source = "./package"
-  userdata_logging = var.userdata_logging
   ec2user = var.ec2user
 }
 
@@ -62,7 +61,6 @@ module "master" {
 
   k8s_pod_cidr = var.k8s_pod_cidr
   worker_ip_list = module.worker.ip_list
-  k8s_cluster_bootstrap_privatekey_path = var.k8s_cluster_bootstrap_privatekey_path
   k8s_cluster_bootstrap_privatekey = module.key.cluster_bootstrap_privatekey
   
 }

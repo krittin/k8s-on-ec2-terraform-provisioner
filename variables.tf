@@ -1,49 +1,37 @@
 variable "provider-profile" {
   type = string
-}
-
-variable "private_key_path" {
-  type = string
-}
-
-variable "region" {
-  type = string
+  description = "AWS profile set up for AWS CLI"
 }
 
 variable "aws_key_name" {
   type = string
+  description = "Name of the AWS keypair"
 }
+
+variable "private_key_path" {
+  type = string
+  description = "Absolute path to private key of AWS keypair saved in your local machine"
+}
+
+variable "region" {
+  type = string
+  description = "AWS region in which you want to provision the cluster"
+}
+
 
 variable "k8s_pod_cidr" {
   type = string
-  description = "CIDR for Pod Network"
+  description = "CIDR for Kubernetes pod network"
 }
 
 variable "ec2user" {
   type = string
-}
-
-variable "ami" {
-  type = string
-  description = "ID of AMI to be used"
-  default = "ami-0fc841be1f929d7d1" #RedHat 8
+  description = "User in EC2 instance used for managing the cluster"
 }
 
 variable "worker_count" {
   type = number
-}
-
-variable "userdata_logging" {
-  type = string
-  default = <<EOF
-#!/bin/bash -xe
-exec > >(tee -a /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-EOF
-}
-
-variable "k8s_cluster_bootstrap_privatekey_path" {
-  type = string
-  default = "/home/ec2-user/rsa_pem"
+  description = "Number of worker you wish to have in the cluster"
 }
 
 variable "your_ip_address" {
@@ -53,10 +41,12 @@ variable "your_ip_address" {
 
 variable "aws_vpc_cidr" {
   type = string
+  description = "CIDR of AWS VPC"
 }
 
 variable "aws_subnet_cidr" {
   type = string
+  description = "CIDR of subnet in which you want EC2 instances to reside, MUST be subset of value in aws_vpc_cidr"
 }
 
 variable "cluster_keypair_length" {
@@ -67,5 +57,6 @@ variable "cluster_keypair_length" {
 variable "instance_type" {
   type = string
   default = "t2.medium"
+  description = "AWS EC2 instance type, MUST be at least t2.medium due to Kubernetes requirement"
 }
 

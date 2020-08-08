@@ -23,4 +23,3 @@ variable k8s_installer_script {}
 variable k8s_pod_cidr {}
 variable worker_ip_list {}
 variable k8s_cluster_bootstrap_privatekey {}
-variable k8s_cluster_bootstrap_privatekey_path {}

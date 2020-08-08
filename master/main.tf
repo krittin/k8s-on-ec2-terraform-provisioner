@@ -5,7 +5,7 @@ data "template_file" "cluster-bootstrap" {
     ec2user = var.ec2user
     userdata_logging = var.userdata_logging
     worker_ips = "${join(" ",var.worker_ip_list)}"
-    k8s_cluster_bootstrap_privatekey_path = var.k8s_cluster_bootstrap_privatekey_path
+    k8s_cluster_bootstrap_privatekey_path = "/home/${var.ec2user}/rsa_pem"
   }
 }
 
@@ -54,7 +54,7 @@ resource "aws_instance" "master" {
 
   provisioner "file" {
     content = var.k8s_cluster_bootstrap_privatekey
-    destination = var.k8s_cluster_bootstrap_privatekey_path
+    destination = "/home/${var.ec2user}/rsa_pem"
 
     connection {
       type = "ssh"
