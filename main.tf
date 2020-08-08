@@ -32,7 +32,7 @@ module "package" {
 
 module "worker" {
   source = "./worker"
-  worker_count = 3
+  worker_count = var.worker_count
   aws_key_name = var.aws_key_name
   instance_type = var.instance_type
   aws_privatekey_path = var.private_key_path
