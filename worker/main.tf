@@ -6,7 +6,7 @@ data "template_cloudinit_config" "worker-provisioner" {
     content_type = "text/x-shellscript"
     content = <<EOF
 ${var.userdata_logging}
-sudo hostnamectl set-hostname 'k8s-worker${count.index+1}'
+sudo hostnamectl set-hostname $(curl http://169.254.169.254/latest/meta-data/local-hostname)
 EOF
   }
 
@@ -20,12 +20,19 @@ EOF
   }
 }
 
+resource "aws_iam_instance_profile" "worker-profile" {
+  name = "worker-profile"
+  role = "worker-role"
+}
+
 resource "aws_instance" "worker" {
 
   ami = "ami-0fc841be1f929d7d1" #RedHat8
   instance_type = var.instance_type
   count = var.worker_count
   key_name = var.aws_key_name
+
+  iam_instance_profile = aws_iam_instance_profile.worker-profile.name
 
   subnet_id = var.aws_subnet_id
   vpc_security_group_ids = var.aws_vpc_security_group_ids
@@ -34,6 +41,7 @@ resource "aws_instance" "worker" {
 
   tags = {
     Name = "k8s-worker${count.index+1}"
+    KubernetesCluster = "owned"
   }
 
   provisioner "remote-exec" {

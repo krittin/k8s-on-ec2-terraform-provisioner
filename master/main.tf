@@ -17,7 +17,7 @@ data "template_cloudinit_config" "master-provisioner" {
     content_type = "text/x-shellscript"
     content = <<EOF
 ${var.userdata_logging}
-sudo hostnamectl set-hostname 'k8s-master${count.index+1}'
+sudo hostnamectl set-hostname $(curl http://169.254.169.254/latest/meta-data/local-hostname)
 EOF
   }
 
@@ -29,11 +29,16 @@ EOF
     content_type = "text/x-shellscript"
     content = var.k8s_installer_script
   }
-  part {
-    content_type = "text/x-shellscript"
-    content = data.template_file.cluster-bootstrap.rendered
+  #part {
+  #  content_type = "text/x-shellscript"
+  # content = data.template_file.cluster-bootstrap.rendered
 
-  }
+  #}
+}
+
+resource "aws_iam_instance_profile" "master-profile" {
+  name = "master-profile"
+  role = "master-role"
 }
 
 resource "aws_instance" "master" {
@@ -43,6 +48,8 @@ resource "aws_instance" "master" {
   count = 1
   key_name = var.aws_key_name
 
+  iam_instance_profile = aws_iam_instance_profile.master-profile.name
+
   subnet_id = var.aws_subnet_id
   vpc_security_group_ids = var.aws_vpc_security_group_ids
 
@@ -50,6 +57,7 @@ resource "aws_instance" "master" {
 
   tags = {
     Name = "k8s-master${count.index+1}"
+    KubernetesCluster = "owned"
   }
 
   provisioner "file" {
@@ -62,6 +70,17 @@ resource "aws_instance" "master" {
       user = var.ec2user
       private_key = file(var.aws_privatekey_path)
      }
+  }
 
+  provisioner "file" {
+    source = "${path.module}/cluster-config.yml"
+    destination = "/home/${var.ec2user}/cluster-config.yml"
+
+    connection {
+      type = "ssh"
+      host = self.public_ip
+      user = var.ec2user
+      private_key = file(var.aws_privatekey_path)
+     }
   }
 }

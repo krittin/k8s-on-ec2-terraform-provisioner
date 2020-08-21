@@ -1,12 +1,26 @@
 ${userdata_logging}
 # Start Cluster
-kubeadm init --pod-network-cidr "${k8s_pod_cidr}" 
+kubeadm init --config /home/${ec2user}/cluster-config.yml
 mkdir -p /home/${ec2user}/.kube
 cp -i /etc/kubernetes/admin.conf /home/${ec2user}/.kube/config
 chown $(id -u ${ec2user}):$(id -g ${ec2user}) /home/${ec2user}/.kube/config
 
 # Install network addon
 sudo -u ${ec2user} kubectl apply -f https://docs.projectcalico.org/v3.14/manifests/calico.yaml
+
+cat <<E > /home/${ec2user}/join-cluster-config.yml
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    apiServerEndpoint: 10.0.0.205:6443
+    caCertHashes:
+    - sha256:1cae568bb631a5441843217c8162016158be4f214ef5e79f0f169171f6e799b7
+    token: bbp7q4.qin1uz585i5a15cl
+nodeRegistration:
+  kubeletExtraArgs:
+    cloud-provider: aws
+E
 
 count=0
 while ! [ $count -lt 10 ] ;do

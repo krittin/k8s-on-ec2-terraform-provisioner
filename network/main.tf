@@ -2,6 +2,9 @@ resource "aws_vpc" "k8s-vpc" {
   cidr_block = var.aws_vpc_cidr
   enable_dns_support = true
   enable_dns_hostnames = true
+  tags = {
+    KubernetesCluster = "owned"
+  }
   
 }
 
@@ -9,6 +12,9 @@ resource "aws_subnet" "k8s-subnet" {
   vpc_id = aws_vpc.k8s-vpc.id
   cidr_block = var.aws_subnet_cidr
   map_public_ip_on_launch = true
+  tags = {
+    KubernetesCluster = "owned"
+  }
 }
 
 resource "aws_internet_gateway" "gw" {
@@ -20,6 +26,9 @@ resource "aws_default_route_table" "route-table" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.gw.id
+  }
+  tags = {
+    KubernetesCluster = "owned"
   }
 }
 
@@ -55,6 +64,10 @@ resource "aws_security_group" "k8s-sg" {
     to_port = 6443
     protocol = "tcp"
     cidr_blocks = [ aws_subnet.k8s-subnet.cidr_block ]
+  }
+
+  tags = {
+    KubernetesCluster = "owned"
   }
   
 }
