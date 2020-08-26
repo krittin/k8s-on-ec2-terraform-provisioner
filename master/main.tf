@@ -29,11 +29,11 @@ EOF
     content_type = "text/x-shellscript"
     content = var.k8s_installer_script
   }
-  #part {
-  #  content_type = "text/x-shellscript"
-  # content = data.template_file.cluster-bootstrap.rendered
+  part {
+    content_type = "text/x-shellscript"
+   content = data.template_file.cluster-bootstrap.rendered
 
-  #}
+  }
 }
 
 resource "aws_iam_instance_profile" "master-profile" {
@@ -72,15 +72,4 @@ resource "aws_instance" "master" {
      }
   }
 
-  provisioner "file" {
-    source = "${path.module}/cluster-config.yml"
-    destination = "/home/${var.ec2user}/cluster-config.yml"
-
-    connection {
-      type = "ssh"
-      host = self.public_ip
-      user = var.ec2user
-      private_key = file(var.aws_privatekey_path)
-     }
-  }
 }
