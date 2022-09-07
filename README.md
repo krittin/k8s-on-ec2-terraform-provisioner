@@ -26,7 +26,7 @@ This configuration is opinionated. It
 - is a single control-plane Kubernetes cluster so there will be only 1 master node
 - uses RedHat8 AMI 
 - logs userdata of EC2 nodes to /var/log/user-data.log
-- uses Calico network add-on for Kubernetes cluster
+- uses AWS VPC CNI network add-on for Kubernetes cluster
 
 
 ## How to run
