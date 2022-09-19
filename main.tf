@@ -37,7 +37,7 @@ module "worker" {
   instance_type = var.instance_type
   aws_privatekey_path = var.private_key_path
   ec2user = var.ec2user
-  docker_installer_script = module.package.docker
+  docker_installer_script = module.package.containerd
   k8s_installer_script = module.package.k8s
   aws_subnet_id = module.network.aws_subnet_id
   aws_vpc_security_group_ids = module.network.aws_security_group_id_list
@@ -56,7 +56,7 @@ module "master" {
   aws_subnet_id = module.network.aws_subnet_id
   aws_vpc_security_group_ids = module.network.aws_security_group_id_list
 
-  docker_installer_script = module.package.docker
+  docker_installer_script = module.package.containerd
   k8s_installer_script = module.package.k8s
 
   k8s_pod_cidr = var.k8s_pod_cidr
