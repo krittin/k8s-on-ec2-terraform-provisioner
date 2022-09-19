@@ -9,8 +9,8 @@ EOF
   }
 }
 
-data "template_file" "docker-installer" {
-  template = "${file("${path.module}/scripts/docker-installer.tpl")}"
+data "template_file" "containerd-installer" {
+  template = "${file("${path.module}/scripts/containerd-installer.tpl")}"
   vars = {
     userdata_logging = <<EOF
 #!/bin/bash -xe
