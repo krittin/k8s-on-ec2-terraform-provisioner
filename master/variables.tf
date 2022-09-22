@@ -17,6 +17,8 @@ variable aws_subnet_id {}
 variable aws_vpc_security_group_ids {}
 
 variable ec2user {}
+
+variable common_package_installer_script {}
 variable docker_installer_script {}
 variable k8s_installer_script {}
 

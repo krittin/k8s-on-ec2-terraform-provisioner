@@ -31,14 +31,19 @@ module "package" {
 
 
 module "worker" {
+
   source = "./worker"
   worker_count = var.worker_count
   aws_key_name = var.aws_key_name
   instance_type = var.instance_type
   aws_privatekey_path = var.private_key_path
   ec2user = var.ec2user
+
+
+  common_package_installer_script = module.package.common-package
   docker_installer_script = module.package.containerd
   k8s_installer_script = module.package.k8s
+
   aws_subnet_id = module.network.aws_subnet_id
   aws_vpc_security_group_ids = module.network.aws_security_group_id_list
   k8s_cluster_bootstrap_publickey = module.key.cluster_bootstrap_publickey
@@ -56,6 +61,7 @@ module "master" {
   aws_subnet_id = module.network.aws_subnet_id
   aws_vpc_security_group_ids = module.network.aws_security_group_id_list
 
+  common_package_installer_script = module.package.common-package
   docker_installer_script = module.package.containerd
   k8s_installer_script = module.package.k8s
 

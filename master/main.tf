@@ -23,6 +23,10 @@ EOF
 
   part {
     content_type = "text/x-shellscript"
+    content = var.common_package_installer_script
+  }
+  part {
+    content_type = "text/x-shellscript"
     content = var.docker_installer_script
   }
   part {
@@ -41,9 +45,17 @@ resource "aws_iam_instance_profile" "master-profile" {
   role = "master-role"
 }
 
+data aws_ami "amazon_linux" {
+  most_recent = true
+  filter {
+    name = "name"
+    values = ["amzn2-ami*"]
+  }
+}
+
 resource "aws_instance" "master" {
 
-  ami = "ami-0fc841be1f929d7d1" #RedHat8
+  ami = data.aws_ami.amazon_linux.id 
   instance_type = var.instance_type
   count = 1
   key_name = var.aws_key_name
@@ -60,6 +72,10 @@ resource "aws_instance" "master" {
     KubernetesCluster = "owned"
   }
 
+  root_block_device {
+    volume_size = 20
+  }
+
   provisioner "file" {
     content = var.k8s_cluster_bootstrap_privatekey
     destination = "/home/${var.ec2user}/rsa_pem"
@@ -73,3 +89,20 @@ resource "aws_instance" "master" {
   }
 
 }
+
+#resource "aws_ebs_volume" "volume" {
+#  availability_zone = aws_instance.master[count.index].availability_zone
+#  size = 20
+#  count = 1
+#
+#  tags = {
+#    Name = "master${count.index+1}-volume"
+#  }
+#}
+#
+#resource "aws_volume_attachment" "master_volume_attachment" {
+#  count = 1
+#  device_name = "/dev/xvdh"
+#  volume_id = aws_ebs_volume.volume[count.index].id
+#  instance_id = aws_instance.master[count.index].id
+#}
