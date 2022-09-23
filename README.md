@@ -24,9 +24,9 @@ Please check costs associated to each instance type [here](https://aws.amazon.co
 ## This configuration is opinionated
 This configuration is opinionated. It 
 - is a single control-plane Kubernetes cluster so there will be only 1 master node
-- uses RedHat8 AMI 
+- uses Amazon Linux 2 AMI 
 - logs userdata of EC2 nodes to /var/log/user-data.log
-- uses AWS VPC CNI network add-on for Kubernetes cluster
+- uses Flannel network add-on for Kubernetes cluster
 
 
 ## How to run
