@@ -1,26 +1,8 @@
 ${userdata_logging}
 
-# Create cluster config file
-cat <<E > /home/${ec2user}/cluster-config.yml
-apiVersion: kubeadm.k8s.io/v1beta2
-kind: ClusterConfiguration
-networking:
-  podSubnet: ${k8s_pod_cidr}
-apiServer:
-  extraArgs:
-    cloud-provider: aws
-    
-controllerManager:
-  extraArgs:
-    cloud-provider: aws
-
-#nodeRegistration:
-#  kubeletExtraArgs:
-#    cloud-provider: aws
-E
-
 # Start Cluster
-kubeadm init --config /home/${ec2user}/cluster-config.yml
+kubeadm init --pod-network-cidr ${k8s_pod_cidr}
+
 mkdir -p /home/${ec2user}/.kube
 cp -i /etc/kubernetes/admin.conf /home/${ec2user}/.kube/config
 chown $(id -u ${ec2user}):$(id -g ${ec2user}) /home/${ec2user}/.kube/config
@@ -28,9 +10,6 @@ chown $(id -u ${ec2user}):$(id -g ${ec2user}) /home/${ec2user}/.kube/config
 # Install network addon
 yum install -y wget
 cd /home/${ec2user}
-wget https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/master/config/v1.6/aws-k8s-cni.yaml
-sed -i 's/us-west-2/eu-west-2/g' aws-k8s-cni.yaml
-sudo -u ${ec2user} kubectl apply -f aws-k8s-cni.yaml
 
 kubeadm token create --print-join-command > /home/${ec2user}/join_cluster.sh
 
@@ -103,5 +82,7 @@ done
 
 rm ${k8s_cluster_bootstrap_privatekey_path}
 
-kubectl apply -f https://raw.githubusercontent.com/cornellanthony/nlb-nginxIngress-eks/master/apple.yaml
-kubectl apply -f https://raw.githubusercontent.com/cornellanthony/nlb-nginxIngress-eks/master/banana.yaml
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+
+sudo -u ${ec2user} echo 'source <(kubectl completion bash)' >> /home/${ec2user}/.bashrc
+
