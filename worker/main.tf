@@ -24,9 +24,58 @@ EOF
   }
 }
 
+
+resource "aws_iam_policy" "k8s-worker-policy" {
+  name = "k8s-worker-policy"
+  policy = jsonencode({
+    Version: "2012-10-17"
+    Statement: [
+      {
+          Effect: "Allow",
+          Action: [
+              "ec2:DescribeInstances",
+              "ec2:DescribeRegions",
+              "ecr:GetAuthorizationToken",
+              "ecr:BatchCheckLayerAvailability",
+              "ecr:GetDownloadUrlForLayer",
+              "ecr:GetRepositoryPolicy",
+              "ecr:DescribeRepositories",
+              "ecr:ListImages",
+              "ecr:BatchGetImage"
+          ],
+          Resource: "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "k8s-worker-role" {
+  name = "k8s-worker-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+}
+
+resource "aws_iam_role_policy_attachment" "k8s-worker-policy-attached-role" {
+  role       = aws_iam_role.k8s-worker-role.name
+  policy_arn = aws_iam_policy.k8s-worker-policy.arn
+}
+
 resource "aws_iam_instance_profile" "worker-profile" {
   name = "worker-profile"
-  role = "worker-role"
+  #role = "worker-role"
+  role = aws_iam_role.k8s-worker-role.name
 }
 
 data aws_ami "amazon_linux" {
